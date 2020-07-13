@@ -1,22 +1,29 @@
 package eu.acme.demo.domain;
 
 import eu.acme.demo.domain.enums.OrderStatus;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@Getter
+@Setter
 public class Order extends AuditableEntity {
 
-    @Column(name = "ref_code", length = 30, nullable = false)
+    @Column(name = "ref_code", length = 30, nullable = false, unique = true)
     private String clientReferenceCode;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "total_amount", columnDefinition = "DECIMAL(9,2)", nullable = false)
-    private BigDecimal itemTotalAmount;
+    private BigDecimal totalAmount;
 
     @Column(name = "item_count", nullable = false)
     private int itemCount;
@@ -25,43 +32,26 @@ public class Order extends AuditableEntity {
     @Column(name = "status", length = 20, nullable = false)
     private OrderStatus status;
 
-    public String getClientReferenceCode() {
-        return clientReferenceCode;
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @Setter(AccessLevel.NONE)
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    public void addOrderItems(List<OrderItem> orderItems) {
+        orderItems.forEach(this::addOrderItem);
     }
 
-    public void setClientReferenceCode(String orderCode) {
-        this.clientReferenceCode = orderCode;
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getItemTotalAmount() {
-        return itemTotalAmount;
-    }
-
-    public void setItemTotalAmount(BigDecimal itemTotalAmount) {
-        this.itemTotalAmount = itemTotalAmount;
-    }
-
-    public int getItemCount() {
-        return itemCount;
-    }
-
-    public void setItemCount(int itemCount) {
-        this.itemCount = itemCount;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
+    public void removeOrderItem(OrderItem orderItem) {
+        orderItems.remove(orderItem);
+        orderItem.setOrder(null);
     }
 }

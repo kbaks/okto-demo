@@ -1,5 +1,7 @@
 package eu.acme.demo.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,6 +20,8 @@ import java.time.Instant;
  */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 abstract public class AuditableEntity extends PersistableEntity {
 
 	private static final long serialVersionUID = 3674368264042228638L;
@@ -28,19 +32,4 @@ abstract public class AuditableEntity extends PersistableEntity {
 	@Column(name = "updated", nullable = false, columnDefinition = "DATETIME(6)")
 	private Instant updatedDate;
 
-	public Instant getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Instant createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public Instant getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(Instant updatedDate) {
-		this.updatedDate = updatedDate;
-	}
 }

@@ -1,43 +1,24 @@
 package eu.acme.demo.web.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
+@Getter
+@Setter
 public class OrderItemDto {
-    private UUID itemId;
+
+    // Renamed itemId to id so that it matches the database column
+    // If this should not be changed we could create a type map in modelMapper
+    // as it can be seen in commented snippet in eu.acme.demo.config.MapperConfiguration.modelMapper
+    private UUID id;
     private int units;
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
+    private Instant createdDate;
+    private Instant updatedDate;
 
-    public UUID getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(UUID itemId) {
-        this.itemId = itemId;
-    }
-
-    public int getUnits() {
-        return units;
-    }
-
-    public void setUnits(int units) {
-        this.units = units;
-    }
-
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
 }
